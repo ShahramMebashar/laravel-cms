@@ -13,7 +13,7 @@ class HandleInertiaRequests extends Middleware
      *
      * @var string
      */
-    protected $rootView = 'app';
+    protected $rootView = 'admin';
 
     /**
      * Determine the current asset version.
@@ -43,6 +43,7 @@ class HandleInertiaRequests extends Middleware
                     'location' => $request->url(),
                 ]);
             },
+            'isDevelopement' => !app()->isProduction()
         ]);
     }
 }

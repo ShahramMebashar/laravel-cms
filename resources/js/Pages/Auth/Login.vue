@@ -1,18 +1,24 @@
-<script setup>
+<script setup lang="ts">
 import BreezeButton from '@/Components/Button.vue';
 import BreezeCheckbox from '@/Components/Checkbox.vue';
 import BreezeGuestLayout from '@/Layouts/Guest.vue';
 import BreezeInput from '@/Components/Input.vue';
 import BreezeLabel from '@/Components/Label.vue';
 import BreezeValidationErrors from '@/Components/ValidationErrors.vue';
-import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import { Head, Link, useForm, type InertiaForm } from '@inertiajs/inertia-vue3';
+import route from '@/utils/route';
 
-defineProps({
-    canResetPassword: Boolean,
-    status: String,
-});
-
-const form = useForm({
+const props = defineProps<{
+    canResetPassword: boolean,
+    status: string,
+    isDevelopement: boolean
+}>();
+interface Form {
+    email: string,
+    password: string,
+    remember: boolean
+}
+const form: InertiaForm<Form> = useForm({
     email: '',
     password: '',
     remember: false
@@ -23,6 +29,17 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const loginAsAdmin = () => {
+    if(!props.isDevelopement) return;
+    form.post(route('login'), {
+        onBefore: () => {
+            form.email = 'admin@cms.dev';
+            form.password = 'password'
+        },
+        onFinish: () => form.reset('password'),
+    }); 
+}
 </script>
 
 <template>
@@ -36,6 +53,9 @@ const submit = () => {
         </div>
 
         <form @submit.prevent="submit">
+            <div>
+                <a @click.prevent="loginAsAdmin" v-if="props.isDevelopement">Login As Admin</a>
+            </div>
             <div>
                 <BreezeLabel for="email" value="Email" />
                 <BreezeInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required autofocus autocomplete="username" />

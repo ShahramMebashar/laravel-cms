@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use Domain\Users\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Roles;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +28,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::after(function ($user) {
+            return $user->hasRole(Roles::ADMIN) ? true : null;
+        });
     }
 }

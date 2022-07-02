@@ -1,18 +1,18 @@
 import '../css/app.css';
 
-import { createApp, h } from 'vue';
+import { createApp, h, type DefineComponent } from 'vue';
 import { createInertiaApp } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { Ziggy } from './ziggy';
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
+const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'LaraCMS';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => {
-        return resolvePageComponent(
+        return resolvePageComponent<DefineComponent>(
             `./Pages/${name}.vue`,
             import.meta.glob('./Pages/**/*.vue')
         )
